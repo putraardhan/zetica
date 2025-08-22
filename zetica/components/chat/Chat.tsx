@@ -2,8 +2,38 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Message, useChatStore } from "./ChatProvider";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const ACCENT = "#DB3975";
+
+function BotMarkdown({ text }: { text: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      linkTarget="_blank"
+      className="text-[15px] leading-relaxed break-words"
+      components={{
+        a: (props) => (
+          <a {...props} rel="noopener noreferrer" className="underline" />
+        ),
+        code: ({ inline, ...props }) =>
+          inline ? (
+            <code {...props} className="px-1 py-0.5 rounded bg-neutral-200/60 dark:bg-neutral-700/60" />
+          ) : (
+            <pre className="p-3 rounded bg-neutral-200/60 dark:bg-neutral-700/60 overflow-x-auto">
+              <code {...props} />
+            </pre>
+          ),
+        li: ({ children, ...props }) => (
+          <li {...props} className="ml-5 list-disc">{children}</li>
+        ),
+      }}
+    >
+      {text}
+    </ReactMarkdown>
+  );
+}
 
 export function Chat() {
   const { activeId, activeSession, addMessage, updateSessionTitle } = useChatStore();
@@ -35,10 +65,6 @@ export function Chat() {
     const firstOfSession = !activeSession?.messages?.length;
     if (firstOfSession) {
       window.dispatchEvent(new CustomEvent("seiva:first-message"));
-    }
-
-    // set judul dari pesan pertama
-    if (firstOfSession) {
       const title = text.length > 40 ? text.slice(0, 37) + "…" : text;
       updateSessionTitle(activeId, title || "New chat");
     }
@@ -79,25 +105,36 @@ export function Chat() {
           </div>
         )}
 
-        {activeSession?.messages?.map((m) => (
-          <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div
-              className={`max-w-[90%] sm:max-w-[80%] rounded-2xl border px-4 py-3 text-[15px] leading-relaxed shadow-sm ${
-                m.role === "user" ? "" : "bg-white"
-              }`}
-              style={
-                m.role === "user"
-                ? { backgroundColor: "white", borderColor: "#e5e7eb" } // #e5e7eb itu abu-abu Tailwind neutral-200
-              : {}
-              }
-            >
-              <div className="mb-1 text-xs font-medium text-neutral-500">
-                {m.role === "user" ? "You" : "Zetica"}
+        {activeSession?.messages?.map((m) => {
+          const isUser = m.role === "user";
+          return (
+            <div key={m.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`max-w-[90%] sm:max-w-[80%] rounded-2xl border px-4 py-3 shadow-sm ${
+                  isUser ? "" : "bg-white"
+                }`}
+                style={
+                  isUser
+                    ? { backgroundColor: "white", borderColor: "#e5e7eb" }
+                    : {}
+                }
+              >
+                <div className="mb-1 text-xs font-medium text-neutral-500">
+                  {isUser ? "You" : "Zetica"}
+                </div>
+
+                {/* User: plain text; Assistant: Markdown */}
+                {isUser ? (
+                  <div className="whitespace-pre-wrap text-[15px] leading-relaxed break-words">
+                    {m.content}
+                  </div>
+                ) : (
+                  <BotMarkdown text={m.content} />
+                )}
               </div>
-              <div className="whitespace-pre-wrap">{m.content}</div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Input */}
