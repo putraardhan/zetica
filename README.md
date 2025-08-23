@@ -1,14 +1,14 @@
-# Zetica  
+# Zetica  https://zetica.vercel.app/
 
 Zetica is an **AI-powered assistant for the ZenChain ecosystem**, built to simplify interactions with ZenChain’s Layer 1 blockchain. It provides developers, users, and communities with an easy way to explore, query, and build on ZenChain using natural language.  
 
-## 🚀 Features  
+## Features  
 - **ZenChain Knowledge Base** – Get instant answers from ZenChain documentation and ecosystem resources.  
 - **AI-Powered Query** – Ask questions in plain English and receive concise, actionable answers.  
 - **Seamless Integration** – Designed for builders, users, and enthusiasts who want to explore ZenChain.  
 - **Cross-Ecosystem Context** – Covers Bitcoin, Ethereum, and other chains connected via ZenChain interoperability.  
 
-## 🛠️ Getting Started  
+## Getting Started  
 
 ### Prerequisites  
 - Node.js 18+  
@@ -31,16 +31,16 @@ npm run dev
 ```
 Zetica will be available at: [http://localhost:3000](http://localhost:3000)  
 
-## 📖 Usage  
+## Usage  
 - Open the app in your browser.  
 - Type a question related to **ZenChain, dApps, bridges, or interoperability**.  
 - Get real-time AI-powered responses.  
 
-## 📚 Documentation  
+## Documentation  
 For deeper insights into ZenChain and its ecosystem, visit:  
 🔗 [ZenChain Docs](https://docs.zenchain.io/docs)  
 
-## 🤝 Contributing  
+## Contributing  
 Contributions are welcome!  
 1. Fork the repo  
 2. Create a new branch (`git checkout -b feature/new-feature`)  
