@@ -1,6 +1,10 @@
-# Zetica  https://zetica.vercel.app/
+# Zetica  
 
 Zetica is an **AI-powered assistant for the ZenChain ecosystem**, built to simplify interactions with ZenChain’s Layer 1 blockchain. It provides developers, users, and communities with an easy way to explore, query, and build on ZenChain using natural language.  
+
+# Try Zetica
+
+https://zetica.vercel.app/
 
 ## Features  
 - **ZenChain Knowledge Base** – Get instant answers from ZenChain documentation and ecosystem resources.  
