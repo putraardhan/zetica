@@ -25,7 +25,7 @@ function deriveTitle(s: { title: string; messages: ChatMsg[] }) {
 export default function Sidebar({
   className = "",
   onNavigate,
-  forceVisible = false, // tampil paksa (untuk drawer mobile)
+  forceVisible = false,
 }: {
   className?: string;
   onNavigate?: () => void;
@@ -56,7 +56,6 @@ export default function Sidebar({
   }
 
   return (
-    // default: hidden di mobile, tampil di md+. Kalau forceVisible → tampil juga di mobile (drawer).
     <aside
       className={cn(
         forceVisible ? "flex" : "hidden md:flex",
@@ -134,6 +133,18 @@ export default function Sidebar({
           className="flex-1 text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
         >
           X/Twitter
+        </a>
+      </div>
+
+      {/* Feedback (full width, paling bawah) */}
+      <div className="px-3 py-3 border-t">
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfDhsTc4qDIlChxm3E_E_K_SdnYApu3B3dycw8VI7YisX_gaA/viewform?usp=header"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
+        >
+          Feedback
         </a>
       </div>
     </aside>
