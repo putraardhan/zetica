@@ -40,6 +40,10 @@ export function Chat() {
   const [input, setInput] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
 
+  // NEW: states for loading + typewriter
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [typingText, setTypingText] = useState("");
+
   function isNearBottom(el: HTMLElement, px = 80) {
     return el.scrollHeight - el.scrollTop - el.clientHeight < px;
   }
@@ -58,6 +62,31 @@ export function Chat() {
     scrollToBottom(false);
   }, []);
 
+  // auto-scroll while typing
+  useEffect(() => {
+    if (typingText || isWaiting) scrollToBottom(true);
+  }, [typingText, isWaiting]);
+
+  async function typeOut(full: string) {
+    setTypingText("");
+    // Kecepatan ketik (ms/char). Naikkan kalau mau lebih cepat.
+    const speed = 12;
+    for (let i = 1; i <= full.length; i++) {
+      setTypingText(full.slice(0, i));
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((r) => setTimeout(r, speed));
+    }
+    // Commit final message ke store, kosongkan ephemeral
+    const botMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: full,
+      ts: Date.now(),
+    };
+    addMessage(activeId!, botMsg);
+    setTypingText("");
+  }
+
   async function sendMessage() {
     const text = input.trim();
     if (!text || !activeId) return;
@@ -74,6 +103,7 @@ export function Chat() {
     setInput("");
 
     try {
+      setIsWaiting(true);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,9 +112,11 @@ export function Chat() {
 
       const data = (await res.json()) as { reply?: string; error?: string };
       const reply = data?.reply || data?.error || "Sorry, something went wrong. Please try again.";
-      const botMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: reply, ts: Date.now() };
-      addMessage(activeId, botMsg);
+
+      setIsWaiting(false);
+      await typeOut(reply);
     } catch {
+      setIsWaiting(false);
       const botMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -135,6 +167,27 @@ export function Chat() {
             </div>
           );
         })}
+
+        {/* Ephemeral loader / typing bubble */}
+        {(isWaiting || typingText) && (
+          <div className="flex justify-start">
+            <div className="max-w-[90%] sm:max-w-[80%] rounded-2xl border px-4 py-3 shadow-sm bg-white">
+              <div className="mb-1 text-xs font-medium text-neutral-500">Zetica</div>
+
+              {isWaiting ? (
+                // Loader tiga titik
+                <div className="flex items-center gap-1 py-1">
+                  <span className="inline-block h-2 w-2 rounded-full bg-neutral-400 animate-bounce [animation-delay:-0.2s]" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-neutral-400 animate-bounce [animation-delay:-0.1s]" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-neutral-400 animate-bounce" />
+                </div>
+              ) : (
+                // Ketikan bertahap (markdown)
+                <BotMarkdown text={typingText} />
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Input */}
