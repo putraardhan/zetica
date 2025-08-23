@@ -52,5 +52,5 @@ Contributions are welcome!
 4. Push to branch (`git push origin feature/new-feature`)  
 5. Create a Pull Request  
 
-## 📜 License  
+## License  
 MIT License – feel free to use and modify.  
