@@ -17,7 +17,15 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Sidebar DESKTOP (fixed). Hidden <md, aman untuk mobile */}
+      {/* === LAYER BACKGROUND (FIXED) === */}
+      <div className="fixed inset-0 -z-10">
+        {/* Gambar background (tetap) */}
+        <div className="absolute inset-0 bg-[url('/bg-chat.png')] bg-cover bg-center" />
+        {/* Overlay blur + putih tipis (tetap) */}
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm pointer-events-none" />
+      </div>
+
+      {/* Sidebar DESKTOP (fixed) */}
       <div className="fixed left-0 top-0 h-screen z-10">
         <Sidebar />
       </div>
@@ -32,23 +40,8 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Main */}
-      <main
-        className="
-          relative z-0 md:ml-80 h-dvh flex flex-col overflow-y-auto
-          bg-[url('/bg-chat.png')] bg-cover bg-center
-          bg-fixed            /* <-- supaya background tidak ikut scroll (opsional tapi enak) */
-        "
-      >
-        {/* === FIX: overlay dibuat fixed agar tidak ikut scroll === */}
-        <div
-          className="
-            fixed inset-0 z-0
-            bg-white/30 backdrop-blur-sm
-            pointer-events-none
-          "
-        />
-
+      {/* Main (scroll container) — TANPA background lagi */}
+      <main className="relative z-0 md:ml-80 h-dvh flex flex-col overflow-y-auto">
         {/* Header */}
         <header className="sticky top-0 z-20 border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
           <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4">
@@ -63,14 +56,7 @@ export default function HomePage() {
             </button>
 
             <div className="flex items-center gap-2">
-              <Image
-                src="/logo-seiva.png"
-                alt="Zetica"
-                width={24}
-                height={24}
-                className="rounded-full"
-                priority
-              />
+              <Image src="/logo-seiva.png" alt="Zetica" width={24} height={24} className="rounded-full" priority />
               <span className="font-semibold tracking-wide">Zetica</span>
             </div>
           </div>
@@ -79,7 +65,6 @@ export default function HomePage() {
         {/* Hero */}
         {!hasChatted && (
           <section className="relative z-10 mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
-            {/* ^^^ z-10 supaya di atas overlay */}
             <h1 className="font-heading text-center text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
               ZETICA, <span className="text-[#000000]">ZENCHAIN AI ASSISTANT</span>
             </h1>
@@ -91,7 +76,6 @@ export default function HomePage() {
 
         {/* Chat */}
         <div className="relative z-10 mx-auto w-full max-w-3xl flex-1 px-3 sm:px-4 pb-6">
-          {/* ^^^ z-10 agar konten chat di atas overlay */}
           <Chat />
         </div>
       </main>
