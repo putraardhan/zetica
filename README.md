@@ -6,6 +6,9 @@ Zetica is an **AI-powered assistant for the ZenChain ecosystem**, built to simpl
 
 https://zetica.vercel.app/
 
+## Demo of Zetica
+https://youtu.be/xKYLsLILYEg
+
 ## Features  
 - **ZenChain Knowledge Base** – Get instant answers from ZenChain documentation and ecosystem resources.  
 - **AI-Powered Query** – Ask questions in plain English and receive concise, actionable answers.  
