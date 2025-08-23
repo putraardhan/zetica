@@ -25,10 +25,7 @@ export default function HomePage() {
       {/* Drawer MOBILE */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setMobileOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
           <div className="absolute left-0 top-0 h-full w-[85vw] max-w-xs bg-white shadow-xl">
             <Sidebar forceVisible onNavigate={() => setMobileOpen(false)} />
           </div>
@@ -36,26 +33,32 @@ export default function HomePage() {
       )}
 
       {/* Main */}
-      <main className="relative z-0 md:ml-80 h-dvh flex flex-col overflow-y-auto bg-[url('/bg-chat.png')] bg-cover bg-center">
-        {/* Overlay putih tipis supaya teks/chat tetap kebaca */}
-        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm pointer-events-none" />
+      <main
+        className="
+          relative z-0 md:ml-80 h-dvh flex flex-col overflow-y-auto
+          bg-[url('/bg-chat.png')] bg-cover bg-center
+          bg-fixed            /* <-- supaya background tidak ikut scroll (opsional tapi enak) */
+        "
+      >
+        {/* === FIX: overlay dibuat fixed agar tidak ikut scroll === */}
+        <div
+          className="
+            fixed inset-0 z-0
+            bg-white/30 backdrop-blur-sm
+            pointer-events-none
+          "
+        />
 
         {/* Header */}
         <header className="sticky top-0 z-20 border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
           <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4">
-            {/* tombol menu (mobile) */}
             <button
               className="md:hidden -ml-2 mr-1 inline-flex h-9 w-9 items-center justify-center rounded hover:bg-neutral-100"
               aria-label="Open sidebar"
               onClick={() => setMobileOpen(true)}
             >
               <svg width="20" height="20" viewBox="0 0 24 24">
-                <path
-                  d="M4 6h16M4 12h16M4 18h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
+                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
 
@@ -75,7 +78,8 @@ export default function HomePage() {
 
         {/* Hero */}
         {!hasChatted && (
-          <section className="relative mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
+          <section className="relative z-10 mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
+            {/* ^^^ z-10 supaya di atas overlay */}
             <h1 className="font-heading text-center text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
               ZETICA, <span className="text-[#000000]">ZENCHAIN AI ASSISTANT</span>
             </h1>
@@ -86,7 +90,8 @@ export default function HomePage() {
         )}
 
         {/* Chat */}
-        <div className="relative mx-auto w-full max-w-3xl flex-1 px-3 sm:px-4 pb-6">
+        <div className="relative z-10 mx-auto w-full max-w-3xl flex-1 px-3 sm:px-4 pb-6">
+          {/* ^^^ z-10 agar konten chat di atas overlay */}
           <Chat />
         </div>
       </main>
