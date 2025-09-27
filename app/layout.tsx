@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "@/components/Sidebar";
 import ThemeToggle from "@/components/ThemeToggle";
-import ConnectWalletButton from "@/components/ConnectWalletButton"; // ✅ tambahkan ini
+import ConnectWalletButton from "@/components/ConnectWalletButton";
+import FeedbackButton from "@/components/FeedbackButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
