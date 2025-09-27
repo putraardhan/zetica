@@ -1,5 +1,5 @@
 {
-  "name": "seiva",
+  "name": "zetica",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -29,5 +29,11 @@
     "tailwindcss": "^3.4.10",
     "typescript": "^5"
   },
-  "engines": { "node": "20.x" }
+  "engines": {
+    "node": "20.x"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
 }
