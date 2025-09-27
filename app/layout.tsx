@@ -1,7 +1,6 @@
 "use client";
 
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "@/components/Sidebar";
 import { ChatProvider } from "@/components/chat/ChatProvider";
@@ -9,12 +8,6 @@ import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Zetica",
-  description: "AI Assistant on ZenChain",
-};
-
-// 👉 RootLayout harus client agar bisa pakai usePathname
 export default function RootLayout({
   children,
 }: {
