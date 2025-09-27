@@ -1,47 +1,41 @@
+"use client";
+
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "@/components/Sidebar";
-import ThemeToggle from "@/components/ThemeToggle";
-import ConnectWalletButton from "@/components/ConnectWalletButton";
-import FeedbackButton from "@/components/FeedbackButton";
+import { ChatProvider } from "@/components/chat/ChatProvider";
+import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Zetica",
-  description: "AI-powered assistant for ZenChain",
+  description: "AI Assistant on ZenChain",
 };
 
+// 👉 RootLayout harus client agar bisa pakai usePathname
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isNotFound = pathname === "/_not-found";
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex min-h-screen">
-          {/* Sidebar */}
-          <Sidebar />
-
-          {/* Main content */}
-          <div className="flex-1 relative">
-            {/* Top right connect wallet */}
-            <ConnectWalletButton />
-
-            {/* Bottom left feedback */}
-            <FeedbackButton />
-
-            {/* Page content */}
-            <main className="p-6">{children}</main>
-
-            {/* Bottom right theme toggle */}
-            <div className="fixed bottom-4 right-4">
-              <ThemeToggle />
+        {isNotFound ? (
+          <main className="flex-1">{children}</main>
+        ) : (
+          <ChatProvider>
+            <div className="flex h-screen">
+              <Sidebar className="hidden md:flex" />
+              <main className="flex-1">{children}</main>
             </div>
-          </div>
-        </div>
+          </ChatProvider>
+        )}
       </body>
     </html>
   );
