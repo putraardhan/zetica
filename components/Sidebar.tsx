@@ -3,9 +3,15 @@
 import { useChatStore } from "@/components/chat/ChatProvider";
 
 type ChatMsg = { role: "user" | "assistant"; content: unknown };
+type EthereumProvider = { request: (args: { method: string }) => Promise<string[]> };
+type KeplrKey = { bech32Address: string };
+type KeplrProvider = { enable: (chainId: string) => Promise<void>; getKey: (chainId: string) => Promise<KeplrKey> };
 
 function cn(...xs: Array<string | undefined | null | false>) {
   return xs.filter(Boolean).join(" ");
+}
+function short(addr: string) {
+  return addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : addr;
 }
 function deriveTitle(s: { title: string; messages: ChatMsg[] }) {
   if (s.title && s.title !== "New chat") return s.title;
@@ -18,19 +24,35 @@ function deriveTitle(s: { title: string; messages: ChatMsg[] }) {
 export default function Sidebar({
   className = "",
   onNavigate,
-  forceVisible = false,
+  forceVisible = false, // tampil paksa (drawer mobile)
 }: {
   className?: string;
   onNavigate?: () => void;
   forceVisible?: boolean;
 }) {
   const {
-    sessions,
-    activeId,
-    setActive,
-    createSession,
-    deleteSession,
+    sessions, activeId, setActive, createSession, deleteSession,
+    walletAddr, setWalletAddr,
   } = useChatStore();
+
+  async function connectMetaMask() {
+    const eth = (globalThis as unknown as { ethereum?: EthereumProvider }).ethereum;
+    if (!eth) { window.open("https://metamask.io/download", "_blank"); return; }
+    try {
+      const accs = await eth.request({ method: "eth_requestAccounts" });
+      setWalletAddr(accs?.[0] ?? null);
+    } catch {}
+  }
+
+  async function connectKeplr() {
+    const w = globalThis as unknown as { keplr?: KeplrProvider };
+    if (!w?.keplr) { window.open("https://www.keplr.app/download", "_blank"); return; }
+    try {
+      await w.keplr.enable("pacific-1");
+      const key = await w.keplr.getKey("pacific-1");
+      setWalletAddr(key?.bech32Address ?? null);
+    } catch {}
+  }
 
   return (
     <aside
@@ -44,10 +66,7 @@ export default function Sidebar({
       <div className="p-3 flex items-center justify-between">
         <div className="font-semibold">Chat history</div>
         <button
-          onClick={() => {
-            createSession();
-            onNavigate?.();
-          }}
+          onClick={() => { createSession(); onNavigate?.(); }}
           className="text-sm rounded border px-2 py-1 hover:bg-neutral-50"
         >
           New chat
@@ -63,18 +82,12 @@ export default function Sidebar({
               "group flex items-center justify-between gap-2 px-3 py-2 rounded cursor-pointer",
               s.id === activeId ? "bg-neutral-100" : "hover:bg-neutral-50"
             )}
-            onClick={() => {
-              setActive(s.id);
-              onNavigate?.();
-            }}
+            onClick={() => { setActive(s.id); onNavigate?.(); }}
             title={new Date(s.updatedAt).toLocaleString()}
           >
             <div className="truncate text-sm">{deriveTitle(s)}</div>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteSession(s.id);
-              }}
+              onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}
               className="opacity-0 group-hover:opacity-100 text-xs text-red-600"
               aria-label="Delete"
             >
@@ -83,31 +96,47 @@ export default function Sidebar({
           </div>
         ))}
         {!sessions.length && (
-          <div className="text-sm text-neutral-500 px-3 py-2">
-            No chats yet
-          </div>
+          <div className="text-sm text-neutral-500 px-3 py-2">No chats yet</div>
         )}
       </div>
 
-      {/* Social links */}
-      <div className="px-3 pt-3 pb-3 border-t">
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href="https://discord.com/invite/zenchain"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
-          >
-            Discord
-          </a>
-          <a
-            href="https://x.com/zen_chain"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
-          >
-            X/Twitter
-          </a>
+      {/* Bottom (pinned to bottom) */}
+      <div className="mt-auto border-t">
+        {/* Wallet */}
+        <div className="px-3 py-2 space-y-2">
+          <div className="text-xs font-medium text-neutral-600">Login with wallet</div>
+          {walletAddr ? (
+            <div className="text-sm">
+              Connected: <span className="font-mono">{short(walletAddr)}</span>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <button onClick={connectMetaMask} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
+                MetaMask
+              </button>
+              <button onClick={connectKeplr} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
+                Keplr
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Sosmed (tanpa Feedback) */}
+        <div className="px-3 pt-3 pb-3">
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href="https://discord.com/invite/zenchain" target="_blank" rel="noopener noreferrer"
+              className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
+            >
+              Discord
+            </a>
+            <a
+              href="https://x.com/zen_chain" target="_blank" rel="noopener noreferrer"
+              className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
+            >
+              X/Twitter
+            </a>
+          </div>
         </div>
       </div>
     </aside>
