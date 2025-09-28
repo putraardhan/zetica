@@ -10,6 +10,7 @@ type KeplrProvider = { enable: (chainId: string) => Promise<void>; getKey: (chai
 function cn(...xs: Array<string | undefined | null | false>) {
   return xs.filter(Boolean).join(" ");
 }
+
 function short(addr: string) {
   return addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : addr;
 }
@@ -24,7 +25,7 @@ function deriveTitle(s: { title: string; messages: ChatMsg[] }) {
 export default function Sidebar({
   className = "",
   onNavigate,
-  forceVisible = false, // tampil paksa (drawer mobile)
+  forceVisible = false, // tampil paksa (untuk drawer mobile)
 }: {
   className?: string;
   onNavigate?: () => void;
@@ -55,6 +56,7 @@ export default function Sidebar({
   }
 
   return (
+    // default: hidden di mobile, tampil di md+. Kalau forceVisible → tampil juga di mobile (drawer).
     <aside
       className={cn(
         forceVisible ? "flex" : "hidden md:flex",
@@ -100,44 +102,39 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Bottom (pinned to bottom) */}
-      <div className="mt-auto border-t">
-        {/* Wallet */}
-        <div className="px-3 py-2 space-y-2">
-          <div className="text-xs font-medium text-neutral-600">Login with wallet</div>
-          {walletAddr ? (
-            <div className="text-sm">
-              Connected: <span className="font-mono">{short(walletAddr)}</span>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <button onClick={connectMetaMask} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
-                MetaMask
-              </button>
-              <button onClick={connectKeplr} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
-                Keplr
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Sosmed (tanpa Feedback) */}
-        <div className="px-3 pt-3 pb-3">
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href="https://discord.com/invite/zenchain" target="_blank" rel="noopener noreferrer"
-              className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
-            >
-              Discord
-            </a>
-            <a
-              href="https://x.com/zen_chain" target="_blank" rel="noopener noreferrer"
-              className="text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
-            >
-              X/Twitter
-            </a>
+      {/* Wallet */}
+      <div className="px-3 py-2 border-t space-y-2">
+        <div className="text-xs font-medium text-neutral-600">Login with wallet</div>
+        {walletAddr ? (
+          <div className="text-sm">
+            Connected: <span className="font-mono">{short(walletAddr)}</span>
           </div>
-        </div>
+        ) : (
+          <div className="flex gap-2">
+            <button onClick={connectMetaMask} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
+              MetaMask
+            </button>
+            <button onClick={connectKeplr} className="text-xs rounded border px-2 py-1 hover:bg-neutral-50">
+              Keplr
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Sosmed */}
+      <div className="px-3 py-3 border-t flex gap-2">
+        <a
+          href="https://discord.com/invite/zenchain" target="_blank" rel="noopener noreferrer"
+          className="flex-1 text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
+        >
+          Discord
+        </a>
+        <a
+          href="https://x.com/zen_chain" target="_blank" rel="noopener noreferrer"
+          className="flex-1 text-center text-sm rounded border px-3 py-2 hover:bg-neutral-50"
+        >
+          X/Twitter
+        </a>
       </div>
     </aside>
   );
