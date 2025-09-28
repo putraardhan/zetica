@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Brand tokens for Zetica */
+/* Brand tokens for Seiva */
 @layer base {
   :root {
     --background: 255 255 255;
@@ -12,13 +12,10 @@
     --muted: 246 246 249;
     --card: 255 255 255;
 
-    /* Zetica accent (biru-ungu soft) */
-    --accent-500: 99 102 241;   /* #6366F1 indigo-500 */
-    --accent-600: 79 70 229;    /* #4F46E5 indigo-600 */
-    --accent-700: 67 56 202;    /* #4338CA indigo-700 */
-
-    /* Overlay untuk modal */
-    --overlay: 0 0 0;
+    /* Seiva accent (taken from logo: pink -> red) */
+    --accent-500: 219 57 117;  /* #DB3975 */
+    --accent-600: 206 52 92;   /* #CE345C */
+    --accent-700: 196 58 58;   /* #C43A3A */
   }
 
   body {
@@ -26,6 +23,7 @@
     color: rgb(var(--foreground));
   }
 
+  /* ⬇️ Ganti @apply selection:bg-[...] dengan CSS murni */
   ::selection {
     background-color: rgba(var(--accent-500), 0.2);
   }
@@ -43,13 +41,4 @@
   .ring-accent { --tw-ring-color: rgb(var(--accent-600)); }
   .bg-accent { background-color: rgb(var(--accent-600)); }
   .bg-accent-500 { background-color: rgb(var(--accent-500)); }
-  .bg-accent-700 { background-color: rgb(var(--accent-700)); }
-
-  /* Overlay untuk modal */
-  .bg-overlay { background-color: rgba(var(--overlay), 0.4); }
-
-  /* Fixed button helpers */
-  .btn-fixed {
-    @apply z-50 rounded-lg shadow px-4 py-2 text-sm font-medium;
-  }
 }
