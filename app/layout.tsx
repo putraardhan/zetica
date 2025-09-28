@@ -24,8 +24,13 @@ export default function RootLayout({
         ) : (
           <ChatProvider>
             <div className="flex h-screen">
+              {/* Sidebar kiri */}
               <Sidebar className="hidden md:flex" />
-              <main className="flex-1">{children}</main>
+
+              {/* Main chat area */}
+              <main className="flex-1 flex items-center justify-center">
+                <div className="w-full max-w-3xl px-4">{children}</div>
+              </main>
             </div>
           </ChatProvider>
         )}
