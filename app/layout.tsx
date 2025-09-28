@@ -1,39 +1,26 @@
-"use client";
-
 import "./globals.css";
-import { Inter } from "next/font/google";
-import Sidebar from "@/components/Sidebar";
+import { ThemeProvider } from "next-themes";
+import type { Metadata, Viewport } from "next";
 import { ChatProvider } from "@/components/chat/ChatProvider";
-import { usePathname } from "next/navigation";
+import { Inter, Space_Mono } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" });
+const headingFont = Space_Mono({ subsets: ["latin"], weight: ["400","700"], variable: "--font-heading" });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pathname = usePathname();
-  const isNotFound = pathname === "/_not-found";
+export const metadata: Metadata = {
+  title: "Zetica - Zenchain AI Assistant",
+  description: "Your onchain guide for Zenchain. Ask anything about Zenchain.",
+};
 
+export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {isNotFound ? (
-          <main className="flex-1">{children}</main>
-        ) : (
-          <ChatProvider>
-            <div className="flex h-screen">
-              {/* Sidebar kiri */}
-              <Sidebar className="hidden md:flex" />
-
-              {/* Main chat area */}
-              <main className="flex-1 flex items-center justify-center">
-                <div className="w-full max-w-3xl px-4">{children}</div>
-              </main>
-            </div>
-          </ChatProvider>
-        )}
+    <html lang="id" suppressHydrationWarning className={`${bodyFont.variable} ${headingFont.variable}`}>
+      <body className="min-h-screen bg-white text-black antialiased font-sans">
+        <ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
+          <ChatProvider>{children}</ChatProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
